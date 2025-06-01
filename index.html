@@ -1,0 +1,560 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Translation Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai-sublime.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body);"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+
+  <style>
+    pre code {
+    background-color: inherit !important;  /* Keeps your custom background */
+    }
+    :root {
+      --primary-color: #2C3E50;
+      --secondary-color: #18BC9C;
+      --accent-color: #F39C12;
+      --text-color: #333333;
+      --bg-color: #FFFFFF;
+      --line-height: 1.6;
+      --transition-speed: 0.3s;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; color: var(--text-color); background: var(--bg-color); line-height: var(--line-height); }
+    /* Progress Bar */
+    #progress { position: fixed; top: 0; left: 0; width: 0; height: 4px; background: var(--accent-color); z-index: 100; transition: width var(--transition-speed) ease; }
+    /* Navigation */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: var(--bg-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 99; }
+    nav .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav a { text-decoration: none; font-weight: 600; color: var(--text-color); transition: color var(--transition-speed); }
+    nav a:hover { color: var(--accent-color); }
+    /* Hero Section */
+    .hero { height: 300px; background: url('{{Hero Image URL}}') center/cover no-repeat; display: flex; align-items: center; justify-content: center; position: relative; }
+    .hero::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.4); }
+    .hero h1 { color: #fff; font-size: 3rem; z-index: 1; }
+    /* Container */
+    .container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    .meta { font-size: 0.9rem; color: #777; margin-bottom: 1rem; }
+    /* Content Styles */
+    h2 { margin-top: 2rem; font-size: 1.75rem; color: var(--primary-color); }
+    p { margin-top: 1rem; text-align: justify; }
+    img { max-width: 100%; margin: 1.5rem 0; border-radius: 0.5rem; }
+    blockquote { margin: 2rem; padding: 1rem 1.5rem; background: #f9f9f9; border-left: 6px solid var(--secondary-color); font-style: italic; }
+    pre { background: #2d2d2d; color: #eee; padding: 1rem; overflow-x: auto; border-radius: 0.5rem; margin: 1.5rem 0; }
+    code { font-family: monospace; }
+    .callout { border: 1px solid var(--accent-color); background: #fff7e6; padding: 1rem; margin: 2rem 0; border-radius: 0.5rem; }
+    .btn { display: inline-block; padding: 0.75rem 1.5rem; background: var(--secondary-color); color: #fff; text-decoration: none; border-radius: 0.5rem; font-weight: 600; transition: background var(--transition-speed); }
+    .btn:hover { background: var(--accent-color); }
+    /* Aside / Author */
+    aside { border-top: 1px solid #ECECEC; padding-top: 1.5rem; margin-top: 2rem; font-size: 0.9rem; color: #555; }
+    aside .author { display: flex; align-items: center; gap: 1rem; }
+    aside img { width: 60px; height: 60px; border-radius: 50%; }
+    /* Social Share */
+    .social-share { display: flex; gap: 1rem; margin-top: 2rem; }
+    .social-share a { text-decoration: none; font-size: 1.2rem; }
+    /* Footer */
+    footer { text-align: center; margin: 3rem 0; font-size: 0.8rem; color: #AAA; }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      nav { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="progress"></div>
+  <nav>
+    <div class="logo">Ramzan's Portfolio Website</div>
+    <ul class="icons alt">
+		<li><a href="https://www.linkedin.com/in/ramzan-agriya/" target="_blank" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+		<li><a href="https://github.com/Ramzan16" class="icon brands alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+		<li><a href="https://medium.com/@ramzanagriya29" target="_blank" class="icon brands alt fa-medium"><span class="label">Medium</span></a></li>
+	  </ul>
+  </nav>
+  <section class="hero">
+    <h1>Is Attention <i>Really</i> All You Need?</h1>
+  </section>
+  <div class="container">
+    <div class="meta">
+      <span>By Ramzan Agriya</span> | <span>28<sup>th</sup> May 2025</span> | <span>Read: 15 min</span>
+    </div>
+    <article>
+        
+      <div class="callout">
+        <strong>TL;DR:</strong> This project implements a Transformer-based architecture inspired by the <i>Attention is All You Need</i> paper to translate German to English. The entire model can be found in this <a href="https://github.com/Ramzan16/Machine-Translation-Project" target="_blank">GitHub repository</a>.
+      </div>
+      <h2>Introduction</h2>
+      <p>Back in the early days when Google Translate was launched in 2006, it was hilariously bad at what it was supposed to do. A five minute google search will show examples of Google Translate’s absurd translations. But this is not the case today. Google Translate has come a long way in improving its translations. It may seem that one of the reasons for this is that there is simply more data available for most languages and that has led to better training of the underlying model and as a result better translations.This is partially true. In general the amount of data that is produced is many orders of magnitude larger than what was being produced in 2006.</p>
+      <p>But the main reason behind this improvement is the research done by the google team which is presented in the 2017 paper – <a href="https://arxiv.org/abs/1706.03762" target="_blank"><i>Attention is All You Need</i></a>. This paper suggested a completely different architecture from what the previous state of the art was. This was referred to as a transformer, which solely depended on attention and did not use any sequential processing of the data.</p>
+      <p>In this project, I try to create a transformer model that is similar to the model proposed in the paper. My model is not an exact replica of the model from the paper but the broad underlying structure is inspired from the paper. I train my model for the task of translating German text into English.</p>
+
+      <h2>Dataset</h2>
+      <p>To train my model I used the WMT 2014 de-en dataset. This dataset contains around 4.5 million rows of German and English translations. It can be downloaded from Kaggle or Hugging Face. For this project, I used the Hugging Face’s datasets library to import the training, test and validation sets. And subsequently, I also create the vocabulary for tokens using Hugging Face’s tokenizer API.</p>
+      <pre><code>training_set, test_set, validation_set = load_dataset("wmt14", "de-en", split=["train", "test", 'validation']) 
+
+# Combine German and English text for joint tokenization 
+def get_training_corpus(): 
+    for example in training_set:
+        yield example['translation']['de']  #Yield lazily produces values one at a time. It is memory efficient especially for larger datasets 
+        yield example['translation']['en'] 
+
+# Initialize a tokenizer with BPE model using the Hugging Face Tokenizer API 
+tokenizer = Tokenizer(BPE(unk_token="[UNK]")) 
+tokenizer.pre_tokenizer = Whitespace() 
+
+trainer = BpeTrainer(vocab_size=18000, special_tokens=["[PAD]", "[UNK]", "[BOS]", "[EOS]"]) 
+
+tokenizer.train_from_iterator(get_training_corpus(), trainer=trainer) 
+
+tokenizer.post_processor = TemplateProcessing( 
+    single="[BOS] $A [EOS]", 
+    pair="[BOS] $A [EOS] $B:1 [EOS]:1", 
+    special_tokens=[ 
+        ("[BOS]", tokenizer.token_to_id("[BOS]")), 
+        ("[EOS]", tokenizer.token_to_id("[EOS]")), 
+    ], 
+) 
+vocab = tokenizer.get_vocab() 
+</code></pre>
+
+      <h2>Model</h2>
+      <p>The model built for the project is a conventional transformer with an encoder and decoder layer. The encoder layer prominently contains two sublayers, one is a multi-head attention and the other is a feed forward layer. The decoder has a masked multi-head attention block followed by a cross attention block that retrieves the queries from the encoder. These blocks are followed by a feed forward layer. There are also residual connections between sublayers. The various hyperparameters for the model are saved in a ModelConfig dataclass.</p>
+      <pre><code># Creating a dataclass to store the configurations of the model. 
+
+@dataclass 
+class ModelConfig: 
+    vocab_size: int = 18000 
+    d_model: int = 128 
+    num_heads: int = 8 
+    batch_size: int = 32 
+    context_length: int = 100 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
+</code></pre>
+
+      <h2>Data Pre-Processing</h2>
+      <p>The words from the source and target language can’t directly be processed by the transformer. The sequence of text first needs to be broken down into tokens from a defined set of vocabulary and then each token is to be converted into a vector, often referred to as embeddings, which can be processed by the transformer. These vectors need to somehow encode the information packed inside the sequence. The vectors must be able to show semantic similarities and syntactical relations between tokens as well as their relative positioning.</p>
+      <p>For example, let’s consider the sentence, “I am eating a pineapple pizza.” For simplicity, let’s assume that the tokens in this sequence of text are the individual letters – [‘I’, ‘am’, ‘eating’, ‘a’, ‘pineapple’, ‘pizza’]. In the ideal case, after training the model it will learn efficient embeddings for all these tokens. We understand that if we were to replace pineapple pizza with something like pepperoni pizza, the overall sentence would still mean more or less the same. What it would mean for the model to understand this semantic similarity would be to assign vectors to pineapple, pepperoni and pizza in a way such that the vector sums representing “pineapple pizza” and “pepperoni pizza” are near each other in high dimensional vector space of the embeddings.</p>
+      <p>To encode the relative positions of the tokens, I used fixed (not learned during backpropagation) vectors that are added to the embeddings. The vectors are generated from sinusoidal waves using the following equations<sup><a href="#fn1" id="ref1">1</a></sup>.</p>
+      <p>\[  PE_{(pos, 2i)} = sin(pos/10000^{(2i/d)}) \]
+          \[ PE_{(pos, 2i+1)} = cos(pos/10000^{(2i/d)}) \]
+Where pos is the position of the token in the sequence, \(d\) is the dimension of the embedding space and \(i\) ranges from 0 to \(d-1\)</p>
+      <p>These positional embeddings are then added to the vector embeddings of the tokens to give us the vectors that will be the transformer's input. The classes defined in the snippet below initialise random embeddings for each token and then add positional embeddings to them<sup><a href="#fn2" id="ref2">2</a></sup>.</p>
+      <pre><code>class VectorEmbeddings(nn.Module): 
+    def __init__(self, config): 
+        super().__init__() 
+        self.vocab_size = config.vocab_size 
+        self.d_model = config.d_model 
+        self.embeddings = nn.Embedding(self.vocab_size,self.d_model) 
+
+    def forward(self, x): 
+        emb = self.embeddings(x) 
+        return emb 
+
+class PositionalEmbeddings(nn.Module): 
+    def __init__(self, config): 
+        super().__init__() 
+         
+        pe = torch.zeros(config.context_length, config.d_model)         
+        position = torch.arange(0, config.context_length, dtype=torch.float).unsqueeze(1) 
+         
+        div_term = torch.exp( 
+            torch.arange(0, config.d_model, 2, dtype=torch.float) * 
+            (-math.log(10000.0) / config.d_model) 
+        ) 
+        pe[:, 0::2] = torch.sin(position / div_term) 
+        pe[:, 1::2] = torch.cos(position / div_term) 
+
+        pe = pe.unsqueeze(0)  # (1, context_length, d_model) 
+
+        self.register_buffer('pos_emb', pe) 
+     
+    def forward(self, x): 
+        return x + self.pos_emb 
+</code></pre>
+
+      <h2>The Transformer</h2>
+      <p>The transformer has two major layers, an encoder and a decoder. The vectors representing the source tokens are passed into the encoder. The input of the decoder is initialised with a special “beginning of sentence” token – [BOS] and the paddings token [PAD] is added to create a valid shape for the input. The decoder will generate the next token that it thinks should come after the [BOS] token using the output of the encoder. The generated token is then passed into the decoder again along with the [BOS] token to generate the next word. This loop goes on till the context length is reached or an “end of sentence” token – [EOS], is generated. The output token sequence can then be converted into text via a lookup from the vocabulary.</p>
+      <p>The encoder and decoder have sublayers within them. The encoder has a multi-head attention layer and a feed forward layer whereas the decoder first has a masked multi-head attention layer followed by a cross attention layer, where the encoder’s input is passed into the decoder and finally there is a feed forward layer at the end. Every sublayer also has residual connections for better gradient flow and a layer normalization step before the data is passed onto the next sublayer. Overall the structure of the transformer is as depicted in the figure below.</p>
+      <p>[Insert your own diagram/ image from Attention is All You Need]3</p>
+      <p>3 Figure from: Vaswani et al., "Attention is All You Need", NeurIPS 2017.</p>
+
+      <h2>Attention!</h2>
+      <p>The main feature of the transformer model is the attention mechanism. We can think of the attention head as a mechanism that allows the individual tokens in a sequence to interact and be affected by each other. For example, let's consider a tiny sequence “a stormy night” and again for simplicity, we will assume that every word is an individual token. For the model to understand the context, it would need to somehow tweak the embedding vector of “night” to incorporate the idea that it is “stormy”. In broad terms, this is what attention does!</p>
+      <p>An attention head has three matrices that contain its weights – the query, key and value weights. Multiplying the input vectors to these matrices gives us the three matrices – \(Q\), \(K\) and \(V\) – that are then processed by the function below to give us the output.</p>
+      \[ Attention(Q,K,V) = Softmax\left(\frac{QK^{-1}}{\sqrt d}\right)V \]
+      <p>First Q is multiplied with the transpose of K. We think of Q as asking some arbitrary question, hence it's called the query matrix. And the K is the key matrix that may hold the answer. Multiplying these matrices can be thought of as performing a scalar dot product on the vectors representing the tokens. If a certain dot product yields a higher value, that implies that it is a key that answers the query raised by the Query matrix. This is then divided by the square root of the model dimension and then passed into a softmax function. This step normalizes the output. Then the value matrix V is multiplied to the output. The multiplication of the value matrix can be thought of as giving us the value that corresponds to the keys in the key matrix.<sup><a href="#fn3" id="ref3">3</a></sup></p>
+      <pre><code>class MultiHeadAttention(nn.Module): 
+    """ 
+    Multi-head self-attention using parallel computation. 
+
+    Attributes: 
+        num_heads (int): Number of attention heads. 
+        head_dim (int): Dimensionality of each head. 
+        d_model (int): Dimensionality of the whole multi-head attention block. 
+        batch_size (int): Size of the batch. 
+        context_length (int): Number of tokens in input. 
+        qkv_proj (nn.Linear): Projects input to queries, keys, and values. 
+        out_proj (nn.Linear): Final linear projection after attention. 
+    """ 
+    def __init__(self, config): 
+        super().__init__() 
+        self.num_heads = config.num_heads 
+        self.head_dim = config.d_model // config.num_heads 
+        self.d_model = config.d_model 
+        self.batch_size = config.batch_size 
+        self.context_length = config.context_length 
+
+        assert self.d_model % self.num_heads == 0, "d_model must be divisible by num_heads" 
+
+        self.qkv_proj = nn.Linear(self.d_model, 3 * self.d_model) 
+        self.out_proj = nn.Linear(self.d_model, self.d_model) 
+
+    def forward(self, x, mask=False): 
+        """ 
+        Args: 
+            x (torch.Tensor): Input tensor of shape (batch_size, context_length, d_model) 
+            mask (bool or torch.Tensor): Causal mask flag or tensor. 
+
+        Returns: 
+            torch.Tensor: Output of shape (batch_size, context_length, d_model) 
+        """ 
+        qkv = self.qkv_proj(x)                                                      # (batch_size, context_length, 3 * d_model) 
+        qkv = qkv.view(-1, self.context_length, self.num_heads, 3 * self.head_dim)  # (batch_size, context_length, num_heads, 3 * head_dim) 
+
+        qkv = qkv.permute(0, 2, 1, 3).chunk(3, dim=-1)  # (batch_size, num_heads, context_length, head_dim) 
+        Q, K, V = [t.contiguous() for t in qkv] 
+
+        # Scaled dot-product attention 
+        attn_scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.head_dim ** 0.5)  # (batch_size, num_heads, context_length, context_length) 
+
+        if mask: 
+            mask_tensor = torch.triu(torch.ones(self.context_length, self.context_length, device=x.device), diagonal=1).bool() 
+            attn_scores = attn_scores.masked_fill(mask_tensor.unsqueeze(0).unsqueeze(0), float('-inf')) 
+
+        attn_weights = F.softmax(attn_scores, dim=-1)  # (batch_size, num_heads, context_length, context_length) 
+        attn_output = torch.matmul(attn_weights, V)    # (batch_size, num_heads, context_length, head_dim) 
+
+        attn_output = attn_output.transpose(1, 2).contiguous().view(-1, self.context_length, self.d_model)  # (batch_size, context_length, d_model) 
+
+        return self.out_proj(attn_output)  # (batch_size, context_length, d_model) 
+
+
+class MultiHeadCrossAttention(nn.Module): 
+    """ 
+    Multi-head cross-attention using parallel computation. 
+
+    Attributes: 
+        num_heads (int): Number of attention heads. 
+        head_dim (int): Dimensionality of each head. 
+        q_proj (nn.Linear): Projects query input to queries. 
+        kv_proj (nn.Linear): Projects context input to keys and values. 
+        out_proj (nn.Linear): Final linear projection after attention. 
+    """ 
+    def __init__(self, config): 
+        super().__init__() 
+        self.num_heads = config.num_heads 
+        self.head_dim = config.d_model // config.num_heads 
+        self.d_model = config.d_model 
+
+        assert self.d_model % self.num_heads == 0, "d_model must be divisible by num_heads" 
+
+        self.q_proj = nn.Linear(self.d_model, self.d_model) 
+        self.kv_proj = nn.Linear(self.d_model, 2 * self.d_model) 
+        self.out_proj = nn.Linear(self.d_model, self.d_model) 
+
+    def forward(self, q_embeddings, kv_embeddings, mask=False): 
+        """ 
+        Args: 
+            q_embeddings (torch.Tensor): Query input of shape (batch_size, target_length, d_model) 
+            kv_embeddings (torch.Tensor): Key-value input of shape (batch_size, source_length, d_model) 
+            mask (torch.Tensor or None): Optional mask of shape (batch_size, num_heads, target_length, source_length) 
+
+        Returns: 
+            torch.Tensor: Output of shape (batch_size, target_length, d_model) 
+        """ 
+        batch_size, target_length, _ = q_embeddings.size() 
+        source_length = kv_embeddings.size(1) 
+
+        # 1. Project queries, keys, and values 
+        Q = self.q_proj(q_embeddings).view(batch_size, target_length, self.num_heads, self.head_dim).transpose(1, 2)         # (batch_size, num_heads, target_length, head_dim) 
+        kv = self.kv_proj(kv_embeddings).view(batch_size, source_length, self.num_heads, 2 * self.head_dim).transpose(1, 2)  # (batch_size, num_heads, source_length, 2 * head_dim) 
+        K, V = kv.chunk(2, dim=-1) 
+
+        # 2. Scaled dot-product attention 
+        attn_scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.head_dim ** 0.5)  # (batch_size, num_heads, target_length, source_length) 
+
+        if mask: 
+            mask_tensor = torch.triu(torch.ones(self.context_length, self.context_length, device=x.device), diagonal=1).bool() 
+            attn_scores = attn_scores.masked_fill(mask_tensor.unsqueeze(0).unsqueeze(0), float('-inf')) 
+
+        attn_weights = F.softmax(attn_scores, dim=-1)  # (batch_size, num_heads, target_length, source_length) 
+        attn_output = torch.matmul(attn_weights, V)    # (batch_size, num_heads, target_length, head_dim) 
+
+        # 3. Recombine heads 
+        attn_output = attn_output.transpose(1, 2).contiguous().view(batch_size, target_length, self.d_model) 
+
+        return self.out_proj(attn_output)  # (batch_size, target_length, d_model) 
+</code></pre>
+
+      <h2>The Feed Forward Layer</h2>
+      <p>The second sublayer in the model is a conventional feed forward network with three layers – an input layer, a hidden layer and an output layer. The input and output layers have a linear activation function whereas the hidden layer has a ReLU activation function.</p>
+      <p>The class that initializes this layer is given below:</p>
+      <pre><code>class MLP(nn.Module): 
+    """ 
+    A simple feedforward MLP block. 
+
+    Attributes: 
+        lin1 (nn.Linear): Linear layer projecting from d_model to 4 * d_model. 
+        relu (nn.ReLU): ReLU activation function. 
+        lin2 (nn.Linear): Linear layer projecting from 4 * d_model back to d_model. 
+    """ 
+    def __init__(self, config): 
+        super().__init__() 
+        hidden_dim = 4 * config.d_model  # Intermediate hidden layer size 
+
+        self.lin1 = nn.Linear(config.d_model, hidden_dim) 
+        self.relu = nn.ReLU() 
+        self.lin2 = nn.Linear(hidden_dim, config.d_model) 
+
+    def forward(self, x): 
+        """ 
+        Applies the MLP to the input tensor. 
+
+        Args: 
+            x (torch.Tensor): Input tensor of shape (batch_size, context_length, d_model) 
+
+        Returns: 
+            torch.Tensor: Output tensor of shape (batch_size, context_length, d_model) 
+        """ 
+        x = self.lin1(x)  # (batch_size, context_length, 4 * d_model) 
+        x = self.relu(x)  # (batch_size, context_length, 4 * d_model) 
+        x = self.lin2(x)  # (batch_size, context_length, d_model) 
+        return x 
+</code></pre>
+
+      <h2>Layer Normalization and Residual Connections</h2>
+      <p>Every sublayer has a layer normalization step at the end, along with residual connections. Before passing the output of the sublayer into the layer normalization layer the input of the sublayer is added to it. So, we get a function that looks like this: \( AddNorm = LayerNorm(sublayer_out + sublayer_in) \). The layer normalization shifts and scales the output and that is passed onto the next sublayer.</p>
+      <p>The class that defines this layer is given below:</p>
+      <pre><code>class AddNorm(nn.Module): 
+    """ 
+    Residual connection followed by layer normalization. 
+
+    Attributes: 
+        shape (int or tuple): The shape of the input to be normalized. Typically the last dimension. 
+        eps (float): A small value to avoid division by zero in LayerNorm. 
+        LayerNorm (nn.LayerNorm): The layer normalization module. 
+    """ 
+    def __init__(self, shape, eps=1e-5): 
+        super().__init__() 
+        self.shape = shape 
+        self.eps = eps 
+        self.LayerNorm = nn.LayerNorm(normalized_shape=self.shape, eps=self.eps) 
+
+    def forward(self, x_attn, x): 
+        """ 
+        Applies residual connection followed by layer normalization. 
+
+        Args: 
+            x_attn (torch.Tensor): Output from attention mechanism with same shape as x. 
+            x (torch.Tensor): Original input tensor of shape (batch_size, context_length, d_model). 
+
+        Returns: 
+            torch.Tensor: Output tensor of shape (batch_size, context_length, d_model), normalized. 
+        """ 
+        add_norm = self.LayerNorm(x + x_attn)  # (batch_size, context_length, d_model) 
+        return add_norm 
+</code></pre>
+      <p>All of this is put together in the decoder and encoder which together form the transformer.</p>
+      <pre><code>class Encoder(nn.Module): 
+    """ 
+    Transformer Encoder block. 
+
+    Attributes: 
+        attn_block (MultiHeadAttention): Multi-head attention mechanism. 
+        l_norm1 (AddNorm): Layer normalization after attention block. 
+        lin_layer (MLP): Feed-forward neural network. 
+        l_norm2 (AddNorm): Layer normalization after MLP block. 
+    """ 
+    def __init__(self, config): 
+        """ 
+        Initializes the Encoder module. 
+
+        Args: 
+            config: Configuration object containing model hyperparameters. 
+        """ 
+        super().__init__() 
+        self.attn_block = MultiHeadAttention(config) 
+        self.l_norm1 = AddNorm(config.d_model) 
+        self.lin_layer = MLP(config) 
+        self.l_norm2 = AddNorm(config.d_model) 
+
+    def forward(self, x):  # x: (batch_size, context_length, d_model) 
+        """ 
+        Forward pass of the Encoder. 
+
+        Args: 
+            x (Tensor): Input tensor of shape (batch_size, context_length, d_model) 
+
+        Returns: 
+            Tensor: Output tensor of shape (batch_size, context_length, d_model) 
+        """ 
+        attn_out = self.attn_block(x)                     # (batch_size, context_length, d_model) 
+        l_norm1_out = self.l_norm1(attn_out, x)           # (batch_size, context_length, d_model) 
+        lin_out = self.lin_layer(l_norm1_out)             # (batch_size, context_length, d_model) 
+        l_norm2_out = self.l_norm2(lin_out, l_norm1_out)  # (batch_size, context_length, d_model) 
+        return l_norm2_out 
+
+
+class Decoder(nn.Module): 
+    """ 
+    Transformer decoder block consisting of self-attention, cross-attention, and feed-forward layers, each followed by residual and layer normalization. 
+
+    Attributes: 
+        attn_block (MultiHeadAttention): Multi-head self-attention layer. 
+        l_norm1 (AddNorm): Layer normalization after self-attention. 
+        cross_attn_block (MultiHeadCrossAttention): Multi-head cross-attention with encoder output. 
+        l_norm2 (AddNorm): Layer normalization after cross-attention. 
+        lin_layer (MLP): Feed-forward network. 
+        l_norm3 (AddNorm): Layer normalization after the feed-forward layer. 
+    """ 
+    def __init__(self, config): 
+        """ 
+        Initialize the Decoder with given model configuration. 
+
+        Args: 
+            config (ModelConfig): Configuration with model hyperparameters. 
+        """ 
+        super().__init__() 
+        self.attn_block = MultiHeadAttention(config) 
+        self.l_norm1 = AddNorm(config.d_model) 
+        self.cross_attn_block = MultiHeadCrossAttention(config) 
+        self.l_norm2 = AddNorm(config.d_model) 
+        self.lin_layer = MLP(config) 
+        self.l_norm3 = AddNorm(config.d_model) 
+
+    def forward(self, x, encoder_out): # (batch_size, context_length, d_model) 
+        """ 
+        Forward pass of the decoder block. 
+
+        Args: 
+            x (torch.Tensor): Decoder input tensor of shape  (batch_size, context_length, d_model). 
+            encoder_out (torch.Tensor): Output from the encoder of shape  (batch_size, context_length, d_model). 
+
+        Returns: 
+            torch.Tensor: Output tensor after applying attention and feedforward layers, of shape (batch_size, context_length, d_model). 
+        """ 
+
+        attn_out = self.attn_block(x, mask=True)  # (batch_size, context_length, d_model) 
+        l_norm1_out = self.l_norm1(attn_out, x)   # (batch_size, context_length, d_model) 
+
+        cross_attn_out = self.cross_attn_block(l_norm1_out, encoder_out)  # (batch_size, context_length, d_model) 
+        l_norm2_out = self.l_norm2(cross_attn_out, l_norm1_out)           # (batch_size, context_length, d_model) 
+
+        lin_out = self.lin_layer(l_norm2_out)             # (batch_size, context_length, d_model) 
+        l_norm3_out = self.l_norm3(lin_out, l_norm2_out)  # (batch_size, context_length, d_model) 
+
+        return l_norm3_out  # (batch_size, context_length, d_model) 
+
+
+class Transformer(nn.Module): 
+    """ 
+    A Transformer model composed of an encoder and decoder module, followed by a linear projection and a softmax. 
+
+    Attributes: 
+        encoder (nn.Module): The encoder module for input sequence processing. 
+        decoder (nn.Module): The decoder module that attends to encoder outputs. 
+        lin (nn.Linear): Linear layer mapping decoder output to logits. 
+    """ 
+    def __init__(self, config): 
+        """ 
+        Args: 
+            config (ModelConfig): Configuration object with model hyperparameters. 
+        """ 
+        super().__init__() 
+        self.batch_size = config.batch_size 
+        self.emb = VectorEmbeddings(config) 
+        self.pos_emb = PositionalEmbeddings(config) 
+        self.encoder = Encoder(config) 
+        self.decoder = Decoder(config) 
+        self.proj = nn.Linear(config.d_model, config.vocab_size)  # (batch_size, context_length, vocab_size) 
+
+    def forward(self, x, y): 
+        """ 
+        Perform a forward pass through the Transformer model. 
+
+        Args: 
+            x (torch.Tensor): Input tensor of shape (batch_size, context_length). 
+
+        Returns: 
+            torch.Tensor: Output probabilities of shape (batch_size, context_length, vocab_size). 
+
+        Raises: 
+            RuntimeError: If tensor dimensions are incompatible with expected input. 
+        """ 
+        emb_outx = self.emb(x) 
+        pe_outx = self.pos_emb(emb_outx) 
+        emb_outy = self.emb(y) 
+        pe_outy = self.pos_emb(emb_outy) 
+         
+        encoder_out = self.encoder(pe_outx)               # (batch_size, context_length, d_model) 
+        decoder_out = self.decoder(pe_outy, encoder_out)  # (batch_size, context_length, d_model) 
+        lin_out = self.proj(decoder_out)                  # (batch_size, context_length, vocab_size) 
+        return lin_out 
+</code></pre>
+
+      <h2>Training</h2>
+      <p>I trained the model using gradient descent along with the Adam optimizer. I experimented with batch sizes for 32 and 64 and to no surprise found that while the batch size of 64 makes the gradient descent more efficient and accurate but also slows down training. I finally settled on the batch size of 32 to train the model for 30K iterations.</p>
+
+      <h2>Results</h2>
+      <p>Using the architecture described above, the minimum cross entropy loss I was able to achieve was 3.0652. At this stage the model was able to translate basic sentences from German but had difficulties with more complex sentences.</p>
+
+      <h2>Reflection</h2>
+      <p>The biggest bottleneck in this project was the limited compute power that was at my disposal. Training this model with just one encoder and decoder layer for 30K iterations took more than 12 hours. The code is very efficient as it relies on pytorch's efficient matrix multiplications. Wherever possible I clubbed matrices together for faster calculations. For example the multi-head self attention class stores all the query, key and value weights in one matrix for faster calculations. And the multi-head cross attention class clubs together the key and value weights.</p>
+      <p>In the future I plan to improve the model by adding ways to better initialize the weights using Kaiming normal distributions and adding more encoder-decoder layers in the model. But increasing the size of the model will come with the caveat of increased training time.</p>
+      <p>On a final note, it’s fascinating that NLP tasks like this can be performed with accuracy with the advent of better architectures driven ultimately by research. Before the “Attention is All You Need” paper was released, the state of the art in machine translation were RNNs which are so hard to parallelize due to their inherent structure and now using the transformer model, we left the previous state of the art way behind.<sup><a href="#fn4" id="ref4">4</a></sup></p>
+
+      <br>
+      <hr>
+      <p id="fn1">
+          <sup>1</sup> These positional embeddings are also used in the model suggested by the Attention is All You Need Paper. <a href="#ref1">↩︎</a>
+      </p>
+      <p id="fn2">
+          <sup>2</sup> The entire code can be found <a href="https://github.com/Ramzan16/Machine-Translation-Project/blob/main/model.py" target="_blank">here</a>. <a href="#ref2">↩︎</a>
+      </p>
+      <p id="fn3">
+        <sup>3</sup>This is a very high level abstraction of the reality inside an attention head, intended to give an intuitive understanding of attention. I recommend watching this <a href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" target="_blank">playlist</a> from 3b1b to get a visual understanding of what attention does. <a href="#ref3">↩︎</a>
+      </p>
+      <p>
+        <sup>4</sup>All the resources used as reference or for learning during the span of this project are added in this <a href="https://github.com/Ramzan16/Machine-Translation-Project" target="_blanks">GitHub repository</a>. <a href="#ref4">↩︎</a>
+      </p>
+    </article>
+    <aside>
+      <div class="author">
+        <img src="Self_Image.jpg" alt="Author photo">
+        <div>
+          <strong>About the author</strong>
+          <p>Data Analyst | Machine Learning Enthusiast</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <script>
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.pageYOffset / docHeight) * 100;
+      document.getElementById('progress').style.width = scrolled + '%';
+    });
+  </script>
+</body>
+</html>
