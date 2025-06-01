@@ -1,6 +1,6 @@
 # Machine Translation Project
 
-This is my attempt at creating a transformer for machine translation inspired from the "Attention is All You Need Paper". In this project, I have created a transformer model and trained it for the task of translating German text into English. The details of the projects are on this website - [Insert website]
+This is my attempt at creating a transformer for machine translation inspired from the "Attention is All You Need Paper". In this project, I have created a transformer model and trained it for the task of translating German text into English. The details of the projects are on this website - https://ramzan16.github.io/Machine-Translation-Project/
 
 ## Resources:
 The following is a list of all the resources that helped me get a better understanding of how attention, feed forward layers and other components of a transformer work:
