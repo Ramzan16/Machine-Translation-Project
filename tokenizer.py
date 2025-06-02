@@ -9,14 +9,14 @@ from tokenizers.processors import TemplateProcessing
 # Loading the dataset
 training_set, test_set, validation_set = load_dataset("wmt14", "de-en", split=["train", "test", 'validation'])
 
-#---------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------
 # Helper function to combine German and English text for joint tokenization
 def get_training_corpus():
     for example in training_set:
         yield example['translation']['de']  # Lazily producing one value at a time with Yield
         yield example['translation']['en']
 
-#---------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------
 # Initialize a tokenizer with BPE model using the Hugging Face Tokenizer API
 tokenizer = Tokenizer(BPE(unk_token="[UNK]"))
 tokenizer.pre_tokenizer = Whitespace()
