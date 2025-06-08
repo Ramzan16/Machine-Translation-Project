@@ -162,7 +162,7 @@ class AddNorm(nn.Module):
         Returns:
             torch.Tensor: Output tensor of shape (batch_size, context_length, d_model), normalized.
         """
-        add_norm = self.LayerNorm(x + x_attn)  # (batch_size, context_length, d_model)
+        add_norm = self.LayerNorm(sublayer_out + sublayer_in)  # (batch_size, context_length, d_model)
         return add_norm
 
 
