@@ -151,7 +151,7 @@ class AddNorm(nn.Module):
         self.LayerNorm = nn.LayerNorm(normalized_shape=self.shape, eps=self.eps)
 
 
-    def forward(self, x_attn, x):
+    def forward(self, sublayer_out, sublayer_in):
         """
         Applies residual connection followed by layer normalization.
 
