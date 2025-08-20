@@ -10,11 +10,12 @@ from dataclasses import dataclass
 @dataclass
 class ModelConfig:
     vocab_size: int = 18000
-    d_model: int = 128
+    d_model: int = 512
     num_heads: int = 8
-    batch_size: int = 32
+    batch_size: int = 128
     context_length: int = 100
-    device: str = 'cuda' if torch.cuda.is_available() else 'cpu'
+    num_blocks = 6  # Specifying the number of encoder and decoder blocks
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class VectorEmbeddings(nn.Module):
@@ -36,13 +37,13 @@ class VectorEmbeddings(nn.Module):
         super().__init__()
         self.vocab_size = config.vocab_size
         self.d_model = config.d_model
-        self.embeddings = nn.Embedding(self.vocab_size, self.d_model)
+        self.embeddings = nn.Embedding(self.vocab_size, self.d_model, padding_idx=0)
 
 
     def forward(self, x): # x: (batch_size, context_length)
         """
         Performs the embedding lookup.
-        
+
         Args:
             x (torch.LongTensor): Input tensor of token indices with shape (batch_size, context_length)
 
@@ -68,11 +69,11 @@ class PositionalEmbeddings(nn.Module):
                 - d_model (int): Dimension of the embedding space.
         """
         super().__init__()
-        
+
         pe = torch.zeros(config.context_length, config.d_model)  # (context_length, d_model)
-        
+
         position = torch.arange(0, config.context_length, dtype=torch.float).unsqueeze(1)  # (context_length, 1)
-        
+
         div_term = torch.exp(
             torch.arange(0, config.d_model, 2, dtype=torch.float) *
             (-math.log(10000.0) / config.d_model)
@@ -87,7 +88,7 @@ class PositionalEmbeddings(nn.Module):
 
         # Register as buffer (not a trainable parameter)
         self.register_buffer('pos_emb', pe)
-    
+
 
     def forward(self, x):
         """
@@ -151,7 +152,7 @@ class AddNorm(nn.Module):
         self.LayerNorm = nn.LayerNorm(normalized_shape=self.shape, eps=self.eps)
 
 
-    def forward(self, sublayer_out, sublayer_in):
+    def forward(self, x_attn, x):
         """
         Applies residual connection followed by layer normalization.
 
@@ -162,7 +163,7 @@ class AddNorm(nn.Module):
         Returns:
             torch.Tensor: Output tensor of shape (batch_size, context_length, d_model), normalized.
         """
-        add_norm = self.LayerNorm(sublayer_out + sublayer_in)  # (batch_size, context_length, d_model)
+        add_norm = self.LayerNorm(x + x_attn)  # (batch_size, context_length, d_model)
         return add_norm
 
 
@@ -212,7 +213,7 @@ class MultiHeadAttention(nn.Module):
 
         if mask:
             mask_tensor = torch.triu(torch.ones(self.context_length, self.context_length, device=x.device), diagonal=1).bool()
-            attn_scores = attn_scores.masked_fill(mask_tensor.unsqueeze(0).unsqueeze(0), float('-inf'))
+            attn_scores = attn_scores.masked_fill(mask_tensor, float('-inf'))
 
         attn_weights = F.softmax(attn_scores, dim=-1)  # (batch_size, num_heads, context_length, context_length)
         attn_output = torch.matmul(attn_weights, V)    # (batch_size, num_heads, context_length, head_dim)
@@ -245,8 +246,8 @@ class MultiHeadCrossAttention(nn.Module):
         self.kv_proj = nn.Linear(self.d_model, 2 * self.d_model)
         self.out_proj = nn.Linear(self.d_model, self.d_model)
 
-    
-    def forward(self, q_embeddings, kv_embeddings, mask=None):
+
+    def forward(self, q_embeddings, kv_embeddings, mask=False):
         """
         Args:
             q_embeddings (torch.Tensor): Query input of shape (batch_size, target_length, d_model)
@@ -268,7 +269,9 @@ class MultiHeadCrossAttention(nn.Module):
         attn_scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.head_dim ** 0.5)  # (batch_size, num_heads, target_length, source_length)
 
         if mask:
-            attn_scores = attn_scores.masked_fill(mask, float('-inf'))
+            mask_tensor = torch.triu(torch.ones(self.context_length, self.context_length, device=x.device), diagonal=1).bool()
+            attn_scores = attn_scores.masked_fill(mask_tensor, float('-inf'))
+
 
         attn_weights = F.softmax(attn_scores, dim=-1)  # (batch_size, num_heads, target_length, source_length)
         attn_output = torch.matmul(attn_weights, V)    # (batch_size, num_heads, target_length, head_dim)
@@ -322,7 +325,7 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
     """
-    Transformer decoder block consisting of self-attention, cross-attention, 
+    Transformer decoder block consisting of self-attention, cross-attention,
     and feed-forward layers, each followed by residual and layer normalization.
 
     Attributes:
@@ -354,9 +357,9 @@ class Decoder(nn.Module):
         Forward pass of the decoder block.
 
         Args:
-            x (torch.Tensor): Decoder input tensor of shape 
+            x (torch.Tensor): Decoder input tensor of shape
                 (batch_size, context_length, d_model).
-            encoder_out (torch.Tensor): Output from the encoder of shape 
+            encoder_out (torch.Tensor): Output from the encoder of shape
                 (batch_size, context_length, d_model).
 
         Returns:
@@ -390,11 +393,10 @@ class Transformer(nn.Module):
             config (ModelConfig): Configuration object with model hyperparameters.
         """
         super().__init__()
-        self.batch_size = config.batch_size
         self.emb = VectorEmbeddings(config)
         self.pos_emb = PositionalEmbeddings(config)
-        self.encoder = Encoder(config)
-        self.decoder = Decoder(config)
+        self.encoder = nn.ModuleList([Encoder(config) for _ in range(config.num_blocks)])
+        self.decoder = nn.ModuleList([Decoder(config) for _ in range(config.num_blocks)])
         self.proj = nn.Linear(config.d_model, config.vocab_size)  # (batch_size, context_length, vocab_size)
 
 
@@ -406,7 +408,7 @@ class Transformer(nn.Module):
             x (torch.Tensor): Input tensor of shape (batch_size, context_length).
 
         Returns:
-            torch.Tensor: Output probabilities of shape (batch_size, context_length, vocab_size).
+            torch.Tensor: Output tenser shape (batch_size, context_length, vocab_size).
 
         Raises:
             RuntimeError: If tensor dimensions are incompatible with expected input.
@@ -415,10 +417,13 @@ class Transformer(nn.Module):
         pe_outx = self.pos_emb(emb_outx)
         emb_outy = self.emb(y)
         pe_outy = self.pos_emb(emb_outy)
-        
-        encoder_out = self.encoder(pe_outx)               # (batch_size, context_length, d_model)
-        decoder_out = self.decoder(pe_outy, encoder_out)  # (batch_size, context_length, d_model)
-        lin_out = self.proj(decoder_out)                  # (batch_size, context_length, vocab_size)
-        return lin_out
-    
 
+        for block in self.encoder:
+            pe_outx = block(pe_outx)
+        encoder_out = pe_outx
+
+        for block in self.decoder:
+            pe_outy = block(pe_outy, encoder_out)
+        decoder_out = pe_outy
+        lin_out = self.proj(decoder_out)  # (batch_size, context_length, vocab_size)
+        return lin_out
